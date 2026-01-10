@@ -1,4 +1,7 @@
 package Emili.BackEmili.usuario;
 
-public interface UsuarioRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UsuarioRepository extends JpaRepository<UsuarioModel, Long> {
+
 }
