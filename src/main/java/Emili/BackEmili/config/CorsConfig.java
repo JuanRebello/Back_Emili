@@ -12,7 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:5173")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("X-Session-Id", "Content-Type", "Accept")
+        .allowedHeaders("X-Session-Id", "X-Setup-Token", "Content-Type", "Accept")
                 .exposedHeaders("X-Session-Id")
                 .maxAge(3600);
     }

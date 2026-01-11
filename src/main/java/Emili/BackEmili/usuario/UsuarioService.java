@@ -60,4 +60,17 @@ public class UsuarioService {
     public void deletarUsuarioPorId(Long id){
         usuarioRepository.deleteById(id);
     }
+
+    // Promover usuário para ADMIN
+    public UsuarioResponseDTO promoverParaAdmin(Long id) {
+        Long userId = java.util.Objects.requireNonNull(id, "ID do usuário é obrigatório");
+        Optional<UsuarioModel> usuarioPorId = usuarioRepository.findById(userId);
+        if (usuarioPorId.isEmpty()) {
+            return null;
+        }
+        UsuarioModel usuario = usuarioPorId.get();
+        usuario.setRole(Role.ADMIN);
+        UsuarioModel salvo = usuarioRepository.save(usuario);
+        return usuarioMapper.toResponseDto(salvo);
+    }
 }

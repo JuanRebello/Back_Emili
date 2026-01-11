@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
 
 
 import java.util.List;
@@ -14,6 +15,8 @@ public class UsuarioController {
 
 
     private UsuarioService usuarioService;
+    @Value("${setup.token:}")
+    private String setupToken;
 
     public UsuarioController(UsuarioService usuarioService){
         this.usuarioService = usuarioService;
@@ -68,6 +71,26 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body("Usuário com ID " + id + " não encontrado");
         }
+    }
+
+    // Endpoint de promoção para ADMIN usando token de setup (apenas para bootstrap via Postman)
+    @PutMapping("/promover/{id}")
+    public ResponseEntity<?> promoverUsuarioParaAdmin(@PathVariable Long id,
+                                                      @RequestHeader(value = "X-Setup-Token", required = false) String token){
+        if (setupToken == null || setupToken.isBlank()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Setup token não configurado no backend");
+        }
+        if (token == null || !token.equals(setupToken)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Token de setup inválido");
+        }
+        UsuarioResponseDTO promovido = usuarioService.promoverParaAdmin(id);
+        if (promovido == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Usuário com ID " + id + " não encontrado");
+        }
+        return ResponseEntity.ok(promovido);
     }
 
 }
