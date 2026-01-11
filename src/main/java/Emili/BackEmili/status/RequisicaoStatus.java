@@ -3,9 +3,13 @@ package Emili.BackEmili.status;
 import Emili.BackEmili.requisicao.RequisicaoModel;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "t_requisicao_status")
+@Getter
+@Setter
 public class RequisicaoStatus {
 
     @Id
