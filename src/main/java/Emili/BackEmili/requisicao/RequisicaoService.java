@@ -72,6 +72,19 @@ public class RequisicaoService {
                 .collect(Collectors.toList());
     }
 
+    public List<RequisicaoResponseDTO> listarRequisicoesDoUsuario(Long userId){
+        List<RequisicaoModel> requisicoes = requisicaoRepository.findAll();
+        return requisicoes.stream()
+                .filter(r -> r.getUsuario() != null && java.util.Objects.equals(r.getUsuario().getId(), userId))
+                .map(r -> {
+                    RequisicaoStatus ultimo = requisicaoStatusRepository.findTopByRequisicaoOrderByDataStatusDesc(r);
+                    return (ultimo != null)
+                            ? requisicaoMapper.toResponseDtoWithStatus(r, ultimo.getStatus())
+                            : requisicaoMapper.toResponseDto(r);
+                })
+                .collect(Collectors.toList());
+    }
+
     // Update status with validation and history
     @Transactional
     public RequisicaoResponseDTO atualizarRequisicaoPorId(Long id, RequisicaoUpdateDTO dto){
